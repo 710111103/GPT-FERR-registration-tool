@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>巡检记录</title>
+<style>body{font:15px system-ui;margin:32px;color:#25324a}table{border-collapse:collapse;width:100%;margin:18px 0}td,th{padding:12px;border-bottom:1px solid #ddd;text-align:left}button{margin:5px;padding:7px}#details{white-space:pre-wrap;overflow-wrap:anywhere}.muted{color:#667}</style>
+<h1>巡检记录</h1><a href="/">返回账号列表</a>
+<p class="muted">仅查看已保存记录；打开本页不会登录、刷新AT或删除账号。尚未接入自动巡检调度时，新任务不会自动生成。</p>
+<button id="reload">刷新记录</button><button id="prev">上一页</button><span id="page"></span><button id="next">下一页</button>
+<p id="message" role="status"></p><table><thead><tr><th>ID</th><th>状态</th><th>创建时间</th><th>已检查/总数</th><th>查活失败</th><th>明细</th></tr></thead><tbody id="rows"></tbody></table>
+<h2>失败明细</h2><button id="failurePrev" hidden>上一页明细</button><span id="failurePage"></span><button id="failureNext" hidden>下一页明细</button><pre id="details">选择一条记录查看。</pre>
+<script>
+let page=1,total=0,selected=null,failurePage=1,failureTotal=0;
+const $=id=>document.getElementById(id);
+async function get(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error(`请求失败 HTTP ${r.status}`);const d=await r.json();if(!d.ok)throw Error(d.error||'查询失败');return d;}
+async function failures(id,p=1){selected=id;failurePage=p;try{const d=await get(`/api/accounts/inspections/${id}/failures?page=${p}`);failureTotal=d.total;$('details').textContent=!d.details_available?'此旧记录未保存失败明细。':d.items.length?d.items.map(x=>`账号 #${x.account_id} ${x.email}\n状态：${x.status}\n时间：${x.failed_at}\n原因：${x.error}`).join('\n\n'):'暂无失败明细。';$('failurePage').textContent=`第 ${p} 页，共 ${d.total} 条`;$('failurePrev').hidden=false;$('failureNext').hidden=false;$('failurePrev').disabled=p<=1;$('failureNext').disabled=p*20>=failureTotal;}catch(e){$('details').textContent=e.message;}}
+async function load(){try{$('message').textContent='查询中…';const d=await get(`/api/accounts/inspections?page=${page}`);total=d.total;$('rows').replaceChildren();for(const x of d.items){const tr=document.createElement('tr');for(const v of [x.id,x.status,x.created_at,`${x.checked_count||0}/${x.total_count||0}`,x.live_failed_count||0]){const td=document.createElement('td');td.textContent=String(v??'');tr.append(td);}const td=document.createElement('td'),b=document.createElement('button');b.textContent='查看失败明细';b.onclick=()=>failures(x.id);td.append(b);tr.append(td);$('rows').append(tr);}$('page').textContent=`第 ${page} 页，共 ${total} 条`;$('prev').disabled=page<=1;$('next').disabled=page*20>=total;$('message').textContent=total?'已读取保存记录。':'暂无巡检记录；没有生成或补造历史。';}catch(e){$('message').textContent=e.message;}}
+$('reload').onclick=load;$('prev').onclick=()=>{if(page>1){page--;load();}};$('next').onclick=()=>{if(page*20<total){page++;load();}};$('failurePrev').onclick=()=>failures(selected,failurePage-1);$('failureNext').onclick=()=>failures(selected,failurePage+1);load();
+</script></html>
