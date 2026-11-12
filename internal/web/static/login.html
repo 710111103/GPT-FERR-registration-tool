@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>登录 · Turb GPT Register</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(1200px 600px at 50% -10%, #1b2333 0%, #0d1016 55%, #0a0c11 100%);
+    color: #e6e8eb;
+  }
+  .card {
+    width: 360px; padding: 34px 32px 28px; border-radius: 16px;
+    background: rgba(24,27,34,.92); border: 1px solid #262b35;
+    box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    backdrop-filter: blur(8px);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 3px;
+    background: linear-gradient(135deg, #4f7cff, #7aa2ff);
+    box-shadow: 0 0 14px rgba(79,124,255,.7);
+  }
+  h1 { font-size: 17px; font-weight: 600; margin: 0; letter-spacing: .01em; }
+  label { display: block; font-size: 12px; color: #8b94a3; margin-bottom: 8px; letter-spacing: .04em; }
+  input {
+    width: 100%; padding: 11px 13px; font-size: 14px; font-family: inherit;
+    color: #e6e8eb; background: #0f1115;
+    border: 1px solid #2f3542; border-radius: 9px; outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus { border-color: #4f7cff; box-shadow: 0 0 0 3px rgba(79,124,255,.16); }
+  button {
+    width: 100%; margin-top: 18px; padding: 11px; font-size: 14px; font-weight: 600;
+    font-family: inherit; color: #fff; cursor: pointer;
+    background: linear-gradient(180deg, #5b86ff, #4a74f0);
+    border: 0; border-radius: 9px; transition: filter .15s, transform .1s;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:active { transform: scale(.995); }
+  button:disabled { opacity: .6; cursor: default; }
+  .err { min-height: 18px; margin-top: 12px; font-size: 13px; color: #ff7b72; }
+  .foot { margin-top: 20px; font-size: 11px; color: #5c6472; text-align: center; }
+</style>
+</head>
+<body>
+<form class="card" id="loginForm" autocomplete="off">
+  <div class="brand"><span class="dot"></span><h1>Turb GPT Register</h1></div>
+  <label for="code">访问授权码</label>
+  <input id="code" name="code" type="password" placeholder="请输入授权码" autofocus required>
+  <button type="submit" id="submitBtn">登录</button>
+  <div class="err" id="err"></div>
+  <div class="foot">未设置授权码时，启动日志会打印本次临时授权码</div>
+</form>
+<script>
+const form = document.getElementById('loginForm');
+const err = document.getElementById('err');
+const btn = document.getElementById('submitBtn');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = '登录中…';
+  try {
+    const resp = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: document.getElementById('code').value }),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (resp.ok && data.ok) {
+      location.href = '/';
+      return;
+    }
+    err.textContent = data.error || `登录失败（HTTP ${resp.status}）`;
+  } catch (ex) {
+    err.textContent = '无法连接到服务：' + ex.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '登录';
+  }
+});
+</script>
+</body>
+</html>

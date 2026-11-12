@@ -1,129 +1,53 @@
-# ============================================================
-# 运行时账号凭证 / 真实数据 —— 永远不要提交
-# ============================================================
+# 二进制与运行时数据
+turbd.exe
+/turbd
+*.exe
+*.test
+*.exe.*
+*.exe~
+/turbd*
+/turpd*
 
-# Outlook / API 邮箱池（含密码、clientId、refreshToken 或私有取码地址）
-用于注册的邮箱.json
-用于注册的邮箱.txt
-用于注册的API邮箱.json
-用于注册的API邮箱.txt
-
-# 注册成功账号（含 accessToken、TOTP secret 等）
-注册成功的邮箱.json
-注册成功的邮箱.txt
-注册成功的token.txt
-accounts/
-H_API.md
-
-# Codex 授权凭证（含 access/refresh/id token）
-codex_accounts/
-codex_导出状态.json
-codex_agent_accounts
-
-# 任务记录与运行日志
-注册任务.json
-注册日志/
-accounts_viewer.html
-
-# Cloudflare 域名邮箱池（运行时数据）
-用于注册的域名邮箱.json
-
-# 旧版数据/历史迁移残留
-data/
-
-# ============================================================
-# 缓存 / 临时文件 / 诊断输出
-# ============================================================
-__pycache__/
-*.sqlite3
-*.sqlite3-wal
-*.sqlite3-shm
-.venv/
-*.py[cod]
-*$py.class
-*.so
-*.egg-info/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-
-# 历史调试输出（_xxx.out / _xxx_dump.html）
-tools/_*.out
-tools/_*.html
-tools/_*.py
-!tools/test_codex_oauth.py
-
-# Sentinel runner 临时 challenge 文件
-sentinel-challenge-*.json
-
-# Sentinel 本地调试配置（可能含 Cookie/Bearer/Challenge）
-sentinel.config.json
-tools/sentinel.config.json
-sentinel/sentinel.config.json
-
-# 意外生成的本地目录
--/
-
-# ============================================================
-# 编辑器 / 操作系统
-# ============================================================
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
-
-# ============================================================
-# 本地实验脚本（任何 .local. 前缀的私有文件）
-# ============================================================
-*.local.*
-
-# Local secrets
+# 运行时产物（含账号与密钥，绝不提交）
 .env
-.env.*
-!.env.example
-webui.log
-webui.pid
+turb.sqlite3
+turb.sqlite3-*
 logs/
-run/
-
-# Public repository hardening
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-*.p12
-*.pfx
-*.crt
-*.cer
-*.db
-*.sqlite
-*.sqlite3
-*.sqlite3-*
 *.log
-*.jsonl
-*.har
-*.pcap
-*.pcapng
-*.tmp
+tools/mailtm_accounts.json
+tools/tempmailio_accounts.json
+
+# 临时调试文件
+*.json.tmp
+body.json
+b*.json
+c*.json
+d*.json
+e*.json
+cfg*.json
+imp*.json
+o*.log
+e*.log
+stdout.log
+stderr.log
+
+# 本地调试快照、路由抓取和迁移工作目录
+work/
 *.bak
-*.zip
-*.7z
-*.png
-*.jpg
-*.jpeg
-*.gif
-accounts/
-codex_accounts/
-artifacts/
-verification/
-验证产物/
-注册日志/
-娉ㄥ唽鏃ュ織/
-.static-asset-cache*/
-.static-cache-venv/
-Default-all-domains-*.json
-recovered_session.*
+*.bak2
+*.bak_*
+*.go.bak*
+*~
+/A.json
+/A2.json
+/ce.json
+/ckG.txt
+/fe_api.txt
+/fe_scan.ps1
+/l.json
+/lg101.json
+/patch_session.py
+/r101.json
+/routes_server.txt
+/t.json
+/audit.py
